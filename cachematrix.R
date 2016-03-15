@@ -1,15 +1,39 @@
-## Put comments here that give an overall description of what your
-## functions do
+## The function makecachematrix creates a special matrix object ,which is a list that contains 4 functions: set 
+# (to set the value of the matrix), get (to get the value of the matrix), setInv (to set the value of the inverse 
+# and getInv (to get the value of the inverse). 
 
-## Write a short comment describing this function
 
-makeCacheMatrix <- function(x = matrix()) {
-
+makeCacheMatrix <- function(x = matrix()){
+  x.inverse <- NULL                                          # x.inverse stores the result of the inversion
+  set <- function(y) {
+    x <<- y
+    x.inverse <<- NULL
+  }
+  get <- function() x                                        # Returns the input matrix
+  setInverse <- function(inverse) x.inverse <<- inverse      #Sets the inverse matrix
+  getInverse <- function() x.inverse                         #Gets the inverse matrix
+  list(set = set, get = get,
+       setInverse = setInverse,
+       getInverse = getInverse)
 }
 
 
-## Write a short comment describing this function
+## The following function - cachesolve computes the inverse of the special "matrix" returned by makeCacheMatrix above. 
+# If the inverse has already been calculated (and the matrix has not changed), then the cachesolve should retrieve 
+# the inverse from the cache. If not, it calculates the inverse of
+## the data and sets the value of the inverse in the cache via the `setinverse`
+## function.
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  m <- x$getInverse() 
+  # get the inversed matrix from object x
+  
+  if(!is.null(m)) { 
+    message("getting cached data")   # If the inversion result is there;
+    return(m)                        # return the calculated inversion
+  }
+  data <- x$get()                    # If not, we use x$get to get the matrix object
+  m <- solve(data)                   # we use the solve function to compute the inverse
+  x$setInverse(m)                    # we then set it to the object
+  m                                  # Returns the solved result
 }
